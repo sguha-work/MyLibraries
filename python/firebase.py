@@ -31,34 +31,27 @@ class FirebaseDB:
         return data
 
     ## Public method begins
-    def write(self, collectionName, documentName, data, merge=True):
+    def write(self, collectionName, data):
         dbInstance = self.__getDBInstance()
-        documentRefference = dbInstance.collection(collectionName).document(
-            documentName
-        )
-        if merge == True:
-            print(len(self.read(collectionName, documentName)))
-        else:
-            dataToWrite = {}
-            items = []
-            items.append(data)
-            dataToWrite.update({"items":items})
-            documentRefference.set(dataToWrite)
-
-    def writeBulk(self, collectionName, documentName, data, merge=True):
-        dbInstance = self.__getDBInstance()
-        dataToWrite = {"items": data}
-        documentRefference = dbInstance.collection(collectionName).document(
-            documentName
-        )
-        try:
-            if merge == True:
-                documentRefference.set(dataToWrite, merge=True)
-            else:
-                documentRefference.set(dataToWrite)
-            return True
+        collectionRefference = dbInstance.collection(collectionName)
+        try: 
+            collectionRefference.add(data)
+            return 1
         except:
             print("Unable to write database")
+            return False
+
+    def writeBulk(self, collectionName, data):
+        dbInstance = self.__getDBInstance()
+        collectionRefference = dbInstance.collection(collectionName)
+        try:
+            for index,datum in enumerate(data):
+                collectionRefference.add(datum)
+            ## Returning number of data inserted
+            return index
+        except:
+            print("Unable to write database")
+            return False
 
     def readCSV(self, collectionName, docName=""):
         dataToReturn = self.read(collectionName, docName)
@@ -73,16 +66,13 @@ class FirebaseDB:
         dbInstance = self.__getDBInstance()
         collectionInstance = dbInstance.collection(collectionName)
         docs = collectionInstance.stream()
-        docToReturn = []
+        docToReturn = {}
         if docName == "" or docName == "all":
             for doc in docs:
-                for item in doc.to_dict()["items"]:
-                    docToReturn.append(item)
-                break
+                docToReturn[doc.id]=doc.to_dict()
         else:
             for doc in docs:
                 if doc.id == docName:
-                    for item in doc.to_dict()["items"]:
-                        docToReturn.append(item)
-                    break
+                    docToReturn = doc.to_dict()
+                break
         return docToReturn
