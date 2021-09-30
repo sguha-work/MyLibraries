@@ -44,15 +44,17 @@ class FirebaseDB:
     def writeBulk(self, collectionName, data):
         dbInstance = self.__getDBInstance()
         collectionRefference = dbInstance.collection(collectionName)
-        try:
-            for index,datum in enumerate(data):
-                collectionRefference.add(datum)
-            ## Returning number of data inserted
-            return index
+        batch = dbInstance.batch()
+        for index,datum in enumerate(data):
+            newDoc = collectionRefference.document()
+            batch.set(newDoc, datum)
+        try:            
+            batch.commit()
         except:
-            print("Unable to write database")
-            return False
-
+            print('Unable to write database')
+        ## Returning number of data inserted
+        return (index+1)
+        
     def readCSV(self, collectionName, docName=""):
         dataToReturn = self.read(collectionName, docName)
         # todo

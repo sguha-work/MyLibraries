@@ -6,10 +6,10 @@ csvParserobj = CsvParser("sample-csv.csv")
 data = json.loads(csvParserobj.getJSONData())
 firebaseObj = FirebaseDB()
 # read entire collection example
-print(firebaseObj.readJSON('users', '02AjT1dzJ4v6V8U6raaR'))
+#print(firebaseObj.readJSON('users', '02AjT1dzJ4v6V8U6raaR'))
 
 ## Bulk insert example
-#firebaseObj.writeBulk(u'users', data)
+print(firebaseObj.writeBulk(u'users', data))
 ## Single insert example
 # firebaseObj.write(u'users',{
 #       "Sno": "1",
