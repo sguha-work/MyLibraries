@@ -5,7 +5,9 @@ import json
 csvParserobj = CsvParser("sample-csv.csv")
 data = json.loads(csvParserobj.getJSONData())
 firebaseObj = FirebaseDB()
-dataToWrite = {
-    'items': data
-}
-firebaseObj.write(u'users',u'agents', dataToWrite)
+
+## Bulk insert example
+# dataToWrite = {
+#     'items': data
+# }
+# firebaseObj.write(u'users',u'agents', dataToWrite)

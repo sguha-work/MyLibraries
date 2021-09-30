@@ -31,10 +31,15 @@ class FirebaseDB:
     def write(self, collectionName, documentName, data, merge=True):
         dbInstance = self.__getDBInstance()
         documentRefference = dbInstance.collection(collectionName).document(documentName)
-        if(merge == True):
-            documentRefference.set(data,  merge=True)
-        else:
-            documentRefference.set(data)
+        try:
+            if(merge == True):
+                documentRefference.set(data,  merge=True)
+            else:
+                documentRefference.set(data)
+            return True
+        except:
+            print('Unable to write database')
+            
     def read(self, collectionName, asJSON=True):
         dbInstance = self.__getDBInstance()
         collectionInstance = dbInstance.collection(collectionName)
