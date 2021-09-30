@@ -2,7 +2,7 @@ import json
 import re
 
 
-class csvParser:
+class CsvParser:
     __trimTrailingWhiteSpacesFromHeader = True
     __trimUnsupportedCharectersFromHeader = True
 
@@ -65,5 +65,5 @@ class csvParser:
             return json.dumps(outputJSON)
 
 ## Usage
-# obj = csvPerser("csv.csv,csv2.csv")
+# obj = CsvParser("csv.csv,csv2.csv")
 # print(obj.getJSONData())
