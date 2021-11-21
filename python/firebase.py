@@ -4,10 +4,12 @@ from firebase_admin import firestore
 import json
 
 # configurations begins
-projectId = "fir-project-sguha1988"
+projectId = "developmentdb-51821"
 serviceAccountJSONFilePath = (
-    "fir-project-sguha1988-firebase-adminsdk-3cha6-950836d42b.json"
+    "developmentdb-51821-firebase-adminsdk-x53l8-6b69f0fa61.json"
 )
+
+
 # configurations ends
 
 
@@ -34,7 +36,7 @@ class FirebaseDB:
     def write(self, collectionName, data):
         dbInstance = self.__getDBInstance()
         collectionRefference = dbInstance.collection(collectionName)
-        try: 
+        try:
             collectionRefference.add(data)
             return 1
         except:
@@ -45,16 +47,25 @@ class FirebaseDB:
         dbInstance = self.__getDBInstance()
         collectionRefference = dbInstance.collection(collectionName)
         batch = dbInstance.batch()
-        for index,datum in enumerate(data):
+        for index, datum in enumerate(data):
             newDoc = collectionRefference.document()
             batch.set(newDoc, datum)
-        try:            
+        try:
             batch.commit()
         except:
             print('Unable to write database')
         ## Returning number of data inserted
-        return (index+1)
-        
+        return (index + 1)
+
+    def export(self, dbName, collectionNamesList):
+        dataToReturn = {dbName: {}}
+        for index, collectionName in enumerate(collectionNamesList):
+            dataToReturn[dbName][collectionName] = self.read(collectionName);
+        file = open(dbName+"_exported.json", "w")
+        file.write(json.dumps(dataToReturn))
+        file.close()
+    def importDB(self, dbName):
+        return
     def readCSV(self, collectionName, docName=""):
         dataToReturn = self.read(collectionName, docName)
         # todo
@@ -71,7 +82,7 @@ class FirebaseDB:
         docToReturn = {}
         if docName == "" or docName == "all":
             for doc in docs:
-                docToReturn[doc.id]=doc.to_dict()
+                docToReturn[doc.id] = doc.to_dict()
         else:
             for doc in docs:
                 if doc.id == docName:
